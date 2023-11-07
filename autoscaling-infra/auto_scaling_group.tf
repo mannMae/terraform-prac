@@ -5,7 +5,7 @@ resource "tls_private_key" "rsa_4096" {
 
 variable "key_name" {
   type = string
-  default = "terraform-devops"
+  default = "awslearner_keypair"
   description = "pem file"
 }
 

@@ -1,0 +1,29 @@
+def instances = [
+    a: "13.209.67.13",
+    b: "13.209.8.58"
+]
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('deploy1'){
+            steps {
+                script{
+                    instances.each{ entry ->
+                        sshagent(['EC2_SSH']) {
+                            sh"""
+                            ssh -o StrictHostKeyChecking=no ubuntu@${entry.value} '
+                            sudo wget https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+                            sudo docker run -d --name tomcat -p 80:8080 tomcat:9.0
+                            sudo docker cp sample.war tomcat:/usr/local/tomcat/webapps
+                            sudo rm -rf sample.*
+                            '
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
