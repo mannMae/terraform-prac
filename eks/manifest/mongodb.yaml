@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongodb
+spec:
+  containers:
+  - image: mongo
+    name: mongodb
+    volumeMounts:
+    - mountPath: /data/dbb
+      name: mongodb
+  volumes:
+  - name: mongodb
+    persistentVolumeClaim:
+      claimName: mongo-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: "gp2"
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+  # name: mongo-pv
+# spec:
+  # capacity:
+    # storage: 10Gi
+  # volumeMode: Filesystem
+  # accessModes:
+  # - ReadWriteOnce
+  # persistentVolumeReclaimPolicy: Retain
+  # storageClassName: ""
+  # csi:
+    # driver: ebs.csi.aws.com
+    # fsType: ext4
+    # volumeHandle: fs-076e26c1636d103e6
